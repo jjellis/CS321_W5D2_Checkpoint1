@@ -23,6 +23,17 @@ namespace CS321_W5D2_BlogAPI.Core.Services
             //     Use the _userService to get the current users id.
             //     You may have to retrieve the blog in order to check user id
             // TODO: assign the current date to DatePublished
+             var blogId = newPost.BlogId;
+            var blog = _blogRepository.Get(blogId);
+            var userId = blog.UserId;
+
+            var currentUser = _userService.CurrentUserId;
+
+            if (currentUser != userId)
+            {
+                throw new Exception("This blog does not belong to you. Your post is not added.");
+            }
+            newPost.DatePublished = DateTime.Now;
             return _postRepository.Add(newPost);
         }
 
@@ -45,12 +56,29 @@ namespace CS321_W5D2_BlogAPI.Core.Services
         {
             var post = this.Get(id);
             // TODO: prevent user from deleting from a blog that isn't theirs
+            
+            var userId = blog.UserId;
+
+            var currentUser = _userService.CurrentUserId;
+
+            if (currentUser != userId)
+            {
+                throw new Exception("This blog does not belong to you. This post is not removed.");
+            }
             _postRepository.Remove(id);
         }
 
         public Post Update(Post updatedPost)
         {
             // TODO: prevent user from updating a blog that isn't theirs
+            var userId = blog.UserId;
+
+            var currentUser = _userService.CurrentUserId;
+
+            if (currentUser != userId)
+            {
+                throw new Exception("This blog does not belong to you. This post is not updated.");
+            }
             return _postRepository.Update(updatedPost);
         }
 

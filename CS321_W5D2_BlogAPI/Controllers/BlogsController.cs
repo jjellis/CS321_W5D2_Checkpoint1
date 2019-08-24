@@ -19,28 +19,24 @@ namespace CS321_W5D2_BlogAPI.Controllers
         private readonly IBlogService _blogService;
 
         // TODO: inject BlogService
-        public BlogsController()
+         public BlogsController(IBlogService blogService)
         {
+            _blogService = blogService;
         }
 
         // GET: api/blogs
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             try
             {
                 // TODO: replace the code below with the correct implementation
                 // to return all blogs
-                return Ok(new BlogModel[] {
-                    new BlogModel
-                    {
-                        Id = 1,
-                        Name = "Fix Me!",
-                        Description = "Implement GET /api/blogs",
-                        AuthorName = "unknown",
-                    }
-                });
+                 var blogs = _blogService.GetAll();
+                var blogModels = blogs.Select(b => b.ToApiModel());
+                return Ok(blogModels);
+                
             }
             catch (Exception ex)
             {
@@ -58,13 +54,10 @@ namespace CS321_W5D2_BlogAPI.Controllers
             {
                 // TODO: replace the code below with the correct implementation
                 // to return a blog by id
-                return Ok(new BlogModel
-                {
-                    Id = id,
-                    Name = "Fix Me!",
-                    Description = "Implement GET /api/blogs/{id}",
-                    AuthorName = "unknown",
-                });
+                  var blog = _blogService.Get(blogId);
+                var blogModels = blog.ToApiModel();
+                return Ok(blogModels);
+
             }
             catch (Exception ex)
             {
